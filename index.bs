@@ -52,6 +52,8 @@ The <a href="https://w3c.github.io/mediacapture-main/#privacy-and-security-consi
 Moreover, implementors should take care to prevent additional leakage of privacy-sensitive data from captured images.
 For instance, embedding the user’s location in the metadata of the digitzed image (e.g. EXIF) might transmit more private data than the user is expecting.
 
+UA should also be able to determine if currently selected camera has <a>pan</a>, <a>tilt</a> and <a>zoom</a> capabilities. Pan-Tilt-Zoom permission needs to be explicitly requested as an extension to {{"camera"}} permission similar to MIDI SysEx, for example <code>getUserMedia({video: {Pan-Tilt-Zoom: true}})</code>. Camera permission without Pan-Tilt-Zoom should not be implicitly upgraded to Camera permission with Pan-Tilt-Zoom. Users should be re-requested to grant the more stronger permission.
+
 # Image Capture API # {#imagecaptureapi}
 
 The User Agent must support Promises in order to implement the Image Capture API.  Any {{Promise}} object is assumed to have a resolver object, with <code>resolve()</code> and <code>reject()</code> methods associated with it.
@@ -776,6 +778,10 @@ When the {{getSettings()}} method is invoked on a video stream track, the user a
 
     <li><dfn>Zoom</dfn> is a numeric camera setting that controls the focal length of the lens.  The setting usually represents a ratio, e.g. 4 is a zoom ratio of 4:1.  The minimum value is usually 1, to represent a 1:1 ratio (i.e. no zoom).</li>
 
+    <div class="note">
+      UAs should have the ability to determine when a page is requesting <a>pan</a>, <a>tilt</a> and <a>zoom</a> capabilities. UA can decide how to show to user that the page is now using Pan-Tilt-Zoom capabilities, but from a privacy point of view, it is important that user is made aware that the page is using zoom and move capabilities.
+    </div></li>
+
     <li><dfn>Fill light mode</dfn> describes the flash setting of the capture device (e.g. |auto|, |off|, |on|). <dfn>Torch</dfn> describes the setting of the source's fill light as  continuously connected, staying on as long as {{track}} is active.</li>
   </ol>
 
@@ -849,7 +855,7 @@ A {{Point2D}} represents a location in a two dimensional space. The origin of co
     &lt;script>
       var imageCapture;
 
-      navigator.mediaDevices.getUserMedia({video: true})
+      navigator.mediaDevices.getUserMedia({video: {Pan-Tilt-Zoom: true}})
         .then(gotMedia)
         .catch(err => console.error('getUserMedia() failed: ', err));
 
